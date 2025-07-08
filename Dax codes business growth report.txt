@@ -1,0 +1,119 @@
+Dax
+
+% Weekend Transactions = DIVIDE([Weekend Transactions], [Total Transactions])
+
+60-Day Revenue = 
+CALCULATE(
+    [Total Revenue],
+    DATESINPERIOD(Calendar[date], MAX(Calendar[date]), -60, DAY)
+)
+
+Additional Marketing = 
+[Base Marketing] * 'Marketing Increase %'[Marketing Increase % Value] * 0.01
+
+Adjusted Retail Price = 
+AVERAGEX(
+    Products,
+    Products[product_retail_price] * (1 + 'Price increase %'[Price increase % Value] * 0.01)
+)
+
+Adjusted Total Profit = [Adjusted Total Revenue] - [Total Cost]
+
+Adjusted Total Revenue = SUMX(
+    'Transactions_Date',
+    'Transactions_Date'[quantity] * 
+    (RELATED(
+    Products[product_retail_price]) * (1 + 'Price increase %'[Price increase % Value] * 0.01)
+))
+
+All Returns = CALCULATE([Total Returns], REMOVEFILTERS())
+
+All Transactions = CALCULATE([Total Transactions], REMOVEFILTERS())
+
+Base Marketing = 
+[Adjusted Total Revenue] * 0.1
+
+Last Month Profit = 
+CALCULATE(
+    [Total Profit],
+    PREVIOUSMONTH(Calendar[date])
+)
+
+Last Month Returns = 
+CALCULATE(
+    [Total Returns],
+    PREVIOUSMONTH(Calendar[date])
+)
+
+Last Month Revenue = 
+CALCULATE(
+    [Total Revenue],
+    PREVIOUSMONTH(Calendar[date])
+)
+
+Last Month Transactions = 
+CALCULATE(
+    [Total Transactions],
+    PREVIOUSMONTH(Calendar[date])
+)
+
+Marketing Change Summary = 
+    "If marketing spend increases by " &
+    FORMAT('Marketing Increase %'[Marketing Increase % Value], "0") &
+    "%, additional spend is " &
+    FORMAT([Additional Marketing], "$#,##0") &
+    ", resulting in a profit of " &
+    FORMAT([Profit After Marketing], "$#,##0")  &
+    "."
+
+Price Change Summary = 
+    "If prices increase by " &
+    FORMAT('Price increase %'[Price increase % Value], "0") &
+    "%, expected revenue is " &
+    FORMAT([Adjusted Total Revenue], "$#,##0") &
+    " compared to base revenue of " &
+    FORMAT([Total Revenue], "$#,##0") &
+    "."
+
+Profit After Marketing = 
+[Adjusted Total Profit] - [Additional Marketing]
+
+Profit Margin = DIVIDE([Total Profit], [Total Revenue])
+
+Quantity Returned = SUM(Returns[quantity])
+
+Quantity Sold = SUM(Transactions_date[quantity])
+
+Return Rate = DIVIDE([Quantity Returned], [Quantity Sold])
+
+Revenue Target = [Last Month Revenue] * 1.05
+
+Total Cost = 
+SUMX(
+    Transactions_Date,
+    Transactions_Date[quantity] * RELATED(Products[product_cost])
+)
+
+Total Profit = [Total Revenue] - [Total Cost]
+
+Total Returns = COUNTROWS(Returns)
+
+Total Revenue = 
+SUMX(
+    Transactions_Date,
+    Transactions_Date[quantity] * RELATED(Products[product_retail_price])
+)
+
+
+Total Transactions = COUNTROWS(Transactions_date)
+
+Unique Products = DISTINCTCOUNT(Products[product_name])
+
+
+Weekend Transactions = 
+CALCULATE(
+    [Total Transactions],
+    Calendar[Weekend] = "Y"
+)
+
+YTD Revenue = TOTALYTD([Total Revenue], Calendar[date])
