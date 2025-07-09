@@ -48,6 +48,5 @@ This project is exploring retail transaction data. The main goal is to analyze k
 
 ## 👤 Author
 
-[Gunel Hesenli](https://www.linkedin.com/in/gunel-hasanli/) | [GitHub Profile](https://github.com/Gunelhasan)
+[Gunel Hasanli LinkedIn](https://www.linkedin.com/in/gunel-hasanli/) | [GitHub Profile](https://github.com/Gunelhasan)
 
-Gunel Hesenli  
